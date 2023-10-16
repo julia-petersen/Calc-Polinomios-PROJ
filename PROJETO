@@ -1,0 +1,239 @@
+#include <stdio.h>
+#include <math.h>
+
+
+//FUNÇÃO PARA EXIBIR O POLINÔMIO
+int mostrar_polin(int t, int coef[]){
+  
+  printf("P(x)=");
+  
+  for (int i = 0; i < t; i++) {
+    if (coef[i] != 0) {
+      if (i < t - 1) {
+        printf("%dx^%d + ", coef[i], t - i -1);
+      } 
+      else {
+        printf("%dx^%d", coef[i], t - i -1);
+      }
+    }
+  }
+}
+
+
+//FUNÇÃO PARA CALCULAR UM POLINÔMIO
+int calc_polin(int t, int coef[], int x){
+  
+  int val = 0;
+  int res;
+  int grau;
+
+  //FOR PARA PERCORRER CADA COEFICIENTE DO POLINÔMIO, APLICANDO NELA O VALOR DE X     DADO
+  for(int i = 0; i < t; i++){
+    grau = t - i -1;
+    res = coef[i] * (pow(x, grau));
+    val += res;
+    
+  }
+  
+  return val;
+  
+}
+
+
+//FUNÇÃO DA SOMA DOS POLINÔMIOS
+void soma_polin (int t1, int v1[], int t2, int v2[], int resultado[], int tam_resultado) {
+
+  //INICIA O VALOR EM 0, PARA NÃO TER VALORES ANTIGOS
+  for (int i = 0; i < tam_resultado; i++) {
+    resultado[i] = 0;
+  }
+
+  //PERCORRE VETOR 1 E APLICA A SOMA, COLOCANDO NO LOCAL CERTO DENTRO DO VETOR
+  for (int i = 0; i < t1; i++) {
+    resultado[i + (tam_resultado - t1)] += v1[i];
+  }
+
+  //COMO O ANTERIOR, PERCORRE O VETOR 2, APLICA A SOMA E ADICIONA NO VETOR RESULTADO DENTRO DA ORDEM
+  for (int i = 0; i < t2; i++) {
+    resultado[i + (tam_resultado - t2)] += v2[i];
+  }
+}
+
+
+//FUNÇÃO DE MULTIPLICAÇÃO DE POLINÔMIOS
+void mult_polin(int t1, int v1[], int t2, int v2[], int resultado[]){
+  for (int i = 0; i < t1 + t2 - 1; i++) {
+    //INICIA O RESULTADO EM 0
+    resultado[i] = 0;
+  }
+
+  //PERCORRE OS VALORES DO VETOR 1
+  for (int i = 0; i < t1; i++) {
+    //PERCORRE OS VALORES DO VETOR 2 E APLICA A MULTIPLICAÇÃO
+    for (int j = 0; j < t2; j++) {
+      resultado[i + j] += v1[i] * v2[j];
+      //INDICE I+J USADO PARA ADICIONAR O RESULTADO NA ORDEM CORRETA
+    }
+  }
+}
+
+
+
+int main() 
+{
+
+  int opc;
+  int t1, t2;
+  int x;
+  
+  do{ 
+    printf("=======================MENU=======================\n");
+    printf("Escolha uma das opções: \n\n");
+    printf("1- Calcular o valor de polinômio.\n");
+    printf("2- Calcular a soma de polinômios.\n");
+    printf("3- Calcular a multiplicação de polinômios.\n");
+    printf("4- Sair\n\n");
+    scanf("%d", &opc);
+
+    //CALCULO DE POLINOMIOS
+    if(opc==1){
+      int t1;
+
+      printf("Insira o tamanho do polinômio: \n");
+      scanf("%d", &t1);
+
+      int v1[t1];
+      printf("Para o polinômio, insira os números que serão pedidos a seguir:\n\n");
+
+      int vet1[t1];
+      for (int i = 0; i < t1; i++) {
+        printf("Insira o coeficiente: \n");
+        scanf("%d", &vet1[i]);
+      }
+      printf("\n");
+      
+      int x;
+      printf("Digite o valor da variável x do seu polinômio: \n\n");
+      scanf("%d", &x);
+    
+      int calculo = calc_polin(t1, vet1, x);
+      
+      printf("\n\n");
+      printf("O resultado do polinômio ");
+      mostrar_polin(t1,vet1);
+      printf(", para x = %d é: %d\n\n\n\n", x, calculo);
+    }
+    
+    
+    //SOMA DOS POLINOMIOS
+    if (opc==2){
+      int t1, t2;
+      printf("\n");
+      
+      printf("Insira o tamanho do primeiro polinômio: \n");
+      scanf("%d", &t1);
+         
+      printf("Para o polinômio, insira o que for pedido a seguir: \n\n");
+      int vet1[t1];
+      for (int i = 0; i < t1; i++) {
+        printf("Insira o coeficiente: \n");
+        scanf("%d", &vet1[i]);
+      }
+      printf("\n");
+      
+      printf("Agora, insira o tamanho do segundo polinômio:    \n");
+      scanf("%d", &t2);
+      int vet2[t2];
+
+      printf("Para o polinômio, insira o que for pedido a seguir: \n\n");
+	
+      for (int i = 0; i < t2; i++) {
+        printf("Insira o coeficiente: \n");
+        scanf("%d", &vet2[i]);
+      }
+      printf("\n\n");
+      int tam_resultado;
+
+      if (t1>t2){
+        tam_resultado = t1;
+      }
+      else{
+        tam_resultado = t2;
+      }
+
+      int resultado[tam_resultado];
+
+      soma_polin(t1, vet1, t2, vet2, resultado, tam_resultado);
+
+      printf("A soma dos polinômios: \n");
+      mostrar_polin(t1, vet1);
+      printf("\n");
+      mostrar_polin(t2, vet2);
+      printf("\n");
+      printf("É: \n");
+
+      //FORMATAÇÃO PARA A IMPRESSÃO CORRETA DA EXPRESSÃO
+      for (int i = 0; i < tam_resultado; i++) {
+        if (resultado[i] != 0) {
+          if (i > 0) {
+            printf(" + ");
+          }
+          printf("%dx^%d", resultado[i], tam_resultado - i - 1);
+        }
+      }
+      printf("\n\n\n\n");
+    }
+    
+    
+    //MULTIPLICAÇÃO DOS POLINOMIOS
+    if (opc==3){
+      printf("\n");
+      int t1, t2;
+  
+      printf("Insira o tamanho do primeiro polinômio: \n");
+      scanf("%d", &t1);
+
+  
+      printf("Para o polinômio, insira o que for pedido a seguir: \n\n");
+  
+      int vet1[t1];
+      for (int i = 0; i < t1; i++) {
+        printf("Insira o coeficiente: \n");
+        scanf("%d", &vet1[i]);
+      }
+      printf("\n");
+      printf("Insira o tamanho do segundo polinômio:    \n");
+      scanf("%d", &t2);
+  
+      int vet2[t2];
+      printf("Para segundo polinômio, insira o que for pedido a seguir: \n\n");
+	
+      for (int i = 0; i < t2; i++) {
+        printf("Insira o coeficiente: \n");
+        scanf("%d", &vet2[i]);
+      }
+      printf("\n");
+      int tam_resultado = t1 + t2 -1;
+      int resultado[tam_resultado];
+      mult_polin(t1, vet1, t2, vet2, resultado);
+
+      printf("O resultado da multiplicação dos polinômios:\n");
+      mostrar_polin(t1, vet1);
+      printf("\n");
+      mostrar_polin(t2, vet2);
+      printf("\n");
+      printf("É:\n");
+
+      //FORMATAÇÃO PARA A IMPRESSÃO CORRETA DA EXPRESSÃO
+      for (int i = 0; i < tam_resultado; i++) {
+        if (resultado[i] != 0) {
+          if (i > 0) {
+            printf(" + ");
+          }
+          printf("%dx^%d", resultado[i], tam_resultado - i - 1);
+        }
+      }
+      printf("\n\n\n\n");
+    }  
+  }while(opc!=4);
+}
